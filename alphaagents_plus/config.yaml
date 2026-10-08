@@ -1,0 +1,32 @@
+# Phase 1 configuration. Edit the universe and dates once you finish your Phase 0 decisions.
+
+tickers: [AAPL, MSFT, NVDA, GOOGL, JPM, BAC, JNJ, PFE, XOM, CVX, WMT, PG]
+benchmark: SPY            # used for beta, the trading calendar and later baselines
+
+start: "2022-01-01"       # first date of price history to download
+end: null                 # null = today
+
+data_dir: data
+
+# REQUIRED by the SEC: a real name and email, or your requests will be blocked.
+sec_user_agent: "Bhumit Janghel bhumit005janghel@gmail.com"
+
+cik_overrides:
+  XOM: [34088, 2115436]
+
+filing_forms: ["10-K", "10-Q"]
+filing_lag_days: 1        # a filing is usable only from (filing date + this many days)
+
+news:
+  provider: finnhub       # key is read from FINNHUB_API_KEY in .env
+  chunk_days: 7           # request size per API call
+
+# lag_days = calendar days after the observation date before we treat the value as public.
+# These are conservative approximations, not exact release dates.
+macro_series:
+  DGS1MO:   {lag_days: 1}    # 1-month Treasury yield (risk-free rate)
+  DGS2:     {lag_days: 1}    # 2-year Treasury yield
+  DGS10:    {lag_days: 1}    # 10-year Treasury yield
+  VIXCLS:   {lag_days: 1}    # VIX volatility index
+  CPIAUCSL: {lag_days: 45}   # consumer price index (monthly, published the next month)
+  UNRATE:   {lag_days: 38}   # unemployment rate (monthly, published the next month)
