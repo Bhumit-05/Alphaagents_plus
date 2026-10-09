@@ -124,5 +124,5 @@ def test_features_are_nan_when_history_is_short():
 def test_monthly_decision_dates():
     pit = make_pit()
     dates = monthly_decision_dates(pit.trading_days("2024-12-31"), "2024-01-01", "2024-06-30")
-    assert len(dates) == 6
+    assert len(dates) == 6 and all(isinstance(d, pd.Timestamp) for d in dates)
     assert dates[0] == pd.Timestamp("2024-01-01") and dates[1] == pd.Timestamp("2024-02-01")

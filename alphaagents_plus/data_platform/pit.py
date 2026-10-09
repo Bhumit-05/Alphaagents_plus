@@ -45,13 +45,11 @@ def monthly_decision_dates(trading_days: pd.DatetimeIndex, start, end) -> list:
     idx = pd.DatetimeIndex(trading_days)
     idx = idx[(idx >= _day(start)) & (idx <= _day(end))]
     s = pd.Series(idx, index=idx)
-    return list(s.groupby([idx.year, idx.month]).first().values)
+    return [pd.Timestamp(x) for x in s.groupby([idx.year, idx.month]).first().values]
 
 
 class PointInTimeData:
-    def __init__(self, prices: pd.DataFrame, filings: pd.DataFrame, news: pd.DataFrame,
-                 macro: pd.DataFrame, benchmark: str = "SPY", filing_lag_days: int = 1,
-                 cutoff=None, data_dir=None):
+    def __init__(self, prices: pd.DataFrame, filings: pd.DataFrame, news: pd.DataFrame, macro: pd.DataFrame, benchmark: str = "SPY", filing_lag_days: int = 1, cutoff=None, data_dir=None):
         self.benchmark = benchmark
         self.filing_lag_days = int(filing_lag_days)
         self.cutoff = None if cutoff is None else _day(cutoff)
@@ -103,8 +101,7 @@ class PointInTimeData:
         if self.cutoff is not None and new > self.cutoff:
             raise FutureAccessError(f"cannot extend cutoff {self.cutoff.date()} to {new.date()}")
         prices, filings, news, macro = self._raw
-        return PointInTimeData(prices, filings, news, macro, self.benchmark,
-                               self.filing_lag_days, cutoff=new, data_dir=self.data_dir)
+        return PointInTimeData(prices, filings, news, macro, self.benchmark, self.filing_lag_days, cutoff=new, data_dir=self.data_dir)
 
     # ------------------------------------------------------------------ guard
     def _check(self, as_of) -> pd.Timestamp:

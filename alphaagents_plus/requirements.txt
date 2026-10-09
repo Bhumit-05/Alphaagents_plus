@@ -6,3 +6,4 @@ requests>=2.31
 yfinance>=0.2.40
 python-dotenv>=1.0
 pytest>=8.0
+matplotlib>=3.8
